@@ -42,9 +42,9 @@ let b0 = {
     }]
 };
 
-ImgData.Nicotine = new Image(); ImgData.Nicotine.src = "Nicotine_resize.png";
-ImgData.Fructose = new Image(); ImgData.Fructose.src = "Fructose_resize.png";
-ImgData.Title = new Image(); ImgData.Title.src = "Title_resize.png";
+ImgData.Nicotine = new Image(); ImgData.Nicotine.src = "images/Nicotine_resize.png";
+ImgData.Fructose = new Image(); ImgData.Fructose.src = "images/Fructose_resize.png";
+ImgData.Title = new Image(); ImgData.Title.src = "images/Title_resize.png";
 
 let stories = [
     [
