@@ -2,91 +2,91 @@
 <html lang="ja">
 
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
 
-    <title>The Delightful Days!</title>
+  <title>The Delightful Days!</title>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js">//jQueryを使用</script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js">//jQueryを使用</script>
 
-    <link rel="stylesheet" href="deco.css">
+  <link rel="stylesheet" href="deco.css">
 
-    <!--キャンバスを作る　横512px縦512px-->
-    <canvas id="canvas0" width="720" height="720"></canvas>
+  <!--キャンバスを作る　横512px縦512px-->
+  <canvas id="canvas0" width="720" height="720"></canvas>
 
-    <script src="C:\Ipota\programs\javascript\Iseries\Ifunctions.js"></script>
-    <script src="C:\Ipota\programs\javascript\Iseries\Init.js"></script>
-    <script src="config.js"></script>
-    <script src="EnemyMaker.js"></script>
-    <script src="Enemies.js"></script>
-    <script src="Scenes.js"></script>
+  <script src="Ifunctions.js"></script>
+  <script src="Init.js"></script>
+  <script src="config.js"></script>
+  <script src="EnemyMaker.js"></script>
+  <script src="Enemies.js"></script>
+  <script src="Scenes.js"></script>
 
-    <script>
-        //bodyにボタンを追加
-        const buttons = { "bullet_mode": "change_bullet_mode", "angle_mode": "change_angle_mode", "muteBGM": "muteBGM", "muteSE": "muteSE" };
-        const keys = Object.keys(buttons)
-        $(function () {
-            for (let key of keys) {
-                $("#body").append("<input type='button' id=" + key + " value=" + buttons[key] + " onclick='button(id);'></input>");
-            }
-            //ボタンの数をcss側に伝えます
-            $("body").css("--button_num", keys.length)
-        });
+  <script>
+    //bodyにボタンを追加
+    const buttons = { "bullet_mode": "change_bullet_mode", "angle_mode": "change_angle_mode", "muteBGM": "muteBGM", "muteSE": "muteSE" };
+    const keys = Object.keys(buttons)
+    $(function () {
+      for (let key of keys) {
+        $("#body").append("<input type='button' id=" + key + " value=" + buttons[key] + " onclick='button(id);'></input>");
+      }
+      //ボタンの数をcss側に伝えます
+      $("body").css("--button_num", keys.length)
+    });
 
-        SoundData.click = new Audio("sounds/click.mp3");
+    SoundData.click = new Audio("sounds/click.mp3");
 
-        function button(id) {
-            switch (id) {
-                case "bullet_mode":
-                    config.bullet_mode = config.bullet_mode == "genmitsu" ? "kirei" : "genmitsu";
-                    break;
-                case "angle_mode":
-                    config.angle_mode = config.angle_mode == "jidou" ? "shudou" : "jidou";
-                    break;
-                case "muteki":
-                    config.muteki = !config.muteki;
-                    break;
-                case "muteBGM":
-                    SoundData.muteBGM = !SoundData.muteBGM;
-                    break;
-                case "muteSE":
-                    SoundData.muteSE = !SoundData.muteSE
+    function button(id) {
+      switch (id) {
+        case "bullet_mode":
+          config.bullet_mode = config.bullet_mode == "genmitsu" ? "kirei" : "genmitsu";
+          break;
+        case "angle_mode":
+          config.angle_mode = config.angle_mode == "jidou" ? "shudou" : "jidou";
+          break;
+        case "muteki":
+          config.muteki = !config.muteki;
+          break;
+        case "muteBGM":
+          SoundData.muteBGM = !SoundData.muteBGM;
+          break;
+        case "muteSE":
+          SoundData.muteSE = !SoundData.muteSE
 
-                default:
-                    console.log("Button Error!")
-            }
+        default:
+          console.log("Button Error!")
+      }
 
-            console.log(id);
-            playSound(SoundData.click);
-        }
-    </script>
+      console.log(id);
+      playSound(SoundData.click);
+    }
+  </script>
 
-    <script>
-        const scenemanager = new SceneManager(scene2);
-        scenemanager.currentScene.Start();
+  <script>
+    const scenemanager = new SceneManager(scene2);
+    scenemanager.currentScene.Start();
 
-        function loop() {
-            scenemanager.currentScene.Update();
+    function loop() {
+      scenemanager.currentScene.Update();
 
-            Irect(0, 0, width, height, "white", "stroke", 2);
+      Irect(0, 0, width, height, "white", "stroke", 2);
 
-            pushed = [];
+      pushed = [];
 
-            if (BGM != null) {
-                BGM.muted = SoundData.muteBGM;
-            }
-        }
+      if (BGM != null) {
+        BGM.muted = SoundData.muteBGM;
+      }
+    }
 
-        //24fpsで実行
-        const play = setInterval(loop, 1000 / 24);
+    //24fpsで実行
+    const play = setInterval(loop, 1000 / 24);
 
-        let BGM = null
+    let BGM = null
 
-    </script>
+  </script>
 
 </head>
 
 <body id="body">
-    <br>
+  <br>
 
 </body>
 
