@@ -46,20 +46,6 @@ ImgData.Nicotine = new Image(); ImgData.Nicotine.src = "images/Nicotine_resize.p
 ImgData.Fructose = new Image(); ImgData.Fructose.src = "images/Fructose_resize.png";
 ImgData.Title = new Image(); ImgData.Title.src = "images/Title_resize.png";
 
-let stories = [
-    [
-        ["text", "Nicotine:\nHallo! 非行少年! お巡りさんだぞ!", ImgData.Nicotine],
-        ["text", "Nicotine:\nこんな夜中に街をうろつきおって...", ImgData.Nicotine],
-        ["text", "Nicotine:\n今から貴様に罰を与えてやろう!", ImgData.Nicotine],
-        ["enemy", EnemiesData.enemy_0]
-    ],
-    [
-        ["text", "Fructose:\nおいしいものはさァ", ImgData.Fructose],
-        ["text", "Fructose:\n食べるかァ、食べないかァ、迷っちゃうよね", ImgData.Fructose],
-        ["text", "Fructose:\nそれはナゼなら、\nおいしいものは罪でできているから!", ImgData.Fructose],
-        ["enemy", EnemiesData.fructose_0]
-    ]
-];
 
 SoundData.textSending = new Audio("Sounds/p.wav");
 SoundData.decision = new Audio("sounds/p.wav");
@@ -69,6 +55,23 @@ SoundData.cancel = new Audio("Sounds/cancel.wav");
 SoundData.Guilt = new Audio("sounds/Guilt.wav");
 SoundData.Conflict = new Audio("sounds/Conflict.wav");
 SoundData.bgm_op = new Audio("sounds/bgm_op.wav");
+
+let stories = [
+    [
+        ["bgm", SoundData.Guilt],
+        ["text", "Nicotine:\nHallo! 非行少年! お巡りさんだぞ!", ImgData.Nicotine],
+        ["text", "Nicotine:\nこんな夜中に街をうろつきおって...", ImgData.Nicotine],
+        ["text", "Nicotine:\n今から貴様に罰を与えてやろう!", ImgData.Nicotine],
+        ["enemy", EnemiesData.enemy_0]
+    ],
+    [
+        ["bgm", SoundData.Conflict],
+        ["text", "Fructose:\nおいしいものはさァ", ImgData.Fructose],
+        ["text", "Fructose:\n食べるかァ、食べないかァ、迷っちゃうよね", ImgData.Fructose],
+        ["text", "Fructose:\nそれはナゼなら、\nおいしいものは罪でできているから!", ImgData.Fructose],
+        ["enemy", EnemiesData.fructose_0]
+    ]
+];
 
 function wall(obj) { return obj.p.x < 0 || gamewidth < obj.p.x || obj.p.y < 0 || gameheight < obj.p.y; }
 function istouched(obj0, obj1) { return obj0.p.sub(obj1.p).length <= obj0.r + obj1.r; }
@@ -88,9 +91,6 @@ const Scene0 = class extends Scene {
         this.pause = false;
 
         this.star = [];
-
-        BGM.volume = 0.4;
-        playSound(BGM, "as bgm");
 
         bullets = [];
         enemies = [{ ...EnemiesData.enemy_first }];
@@ -152,6 +152,8 @@ const Scene0 = class extends Scene {
 
         if (this.ending) {
             this.endingFrame++;
+
+            BGM.volume = 0.4 * (1 - this.endingFrame / 48);
             Irect(0, 0, width, height, "rgba(0,0,0," + this.endingFrame / 48 + ")");
             if (this.endingFrame == 48) {
                 scenemanager.MoveTo(scene1);
@@ -176,9 +178,14 @@ const Scene0 = class extends Scene {
             if (s[0] == "text") {
                 t = s[1];
                 image = s[2];
-            } else if ("enemy") {
+            } else if (s[0] == "enemy") {
                 enemies = [{ ...s[1] }];
                 this.storyMode = false;
+            } else if (s[0] == "bgm") {
+                BGM = s[1];
+                BGM.volume = 0.4;
+                playSound(BGM, "as bgm");
+                this.storyNum++;
             }
 
             if (image != null) { ctx.drawImage(image, 350, Iheight - 400, 400, 400); }
@@ -392,6 +399,7 @@ const Scene1 = class extends Scene {
         this.option = { "": ["始める", "操作方法", "ストーリー"], "0": ["Stage0", "Stage1"], "00": ["Easy"], "01": ["Easy"] };
 
         BGM = SoundData.bgm_op;
+        BGM.volume = 1;
         BGM.currentTime = 0;
         playSound(BGM, "as bgm");
     }
@@ -416,8 +424,8 @@ const Scene1 = class extends Scene {
                 case "1": Itext5(this.frame1, 0, 100, fontsize, "矢印キーで移動、Shiftキーで低速、AXで回転(デフォでは自動)\nESCでPause"); break;
                 case "2": Itext5(this.frame1, 0, 100, fontsize, "ある日、世界にバグが生じ、奇妙な術、魔法を使うものが現れた!\nあなた↓はそのバグを取り除くために派遣されたプログラムである\n弾幕勝負で魔法使いたちを倒そう!"); break;
 
-                case "000": scene0.chapter = 0; this.black = 1; BGM.pause(); BGM = SoundData.Guilt; break;
-                case "010": scene0.chapter = 1; this.black = 1; BGM.pause(); BGM = SoundData.Conflict; break;
+                case "000": scene0.chapter = 0; this.black = 1; break;
+                case "010": scene0.chapter = 1; this.black = 1; break;
 
                 default:
                     Itext4(this.frame1, fontsize, 100, fontsize, this.option[this.select]);
@@ -434,8 +442,11 @@ const Scene1 = class extends Scene {
             if (pushed.includes("cancel") && this.select.length > 0) { this.select = this.select.slice(0, -1); this.frame1 = 0; playSound(SoundData.cancel); }
         }
 
-        if (this.black > 0) { this.black++; }
-        if (this.black == 48) { scenemanager.MoveTo(scene0); }
+        if (this.black > 0) {
+            this.black++;
+            BGM.volume = 1 - this.black / 48;
+        }
+        if (this.black == 48) { BGM.pause(); scenemanager.MoveTo(scene0); }
 
         Ifont(12);
         Itext(this.frame0, 0, height, "" + this.frame0);
