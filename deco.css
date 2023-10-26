@@ -19,7 +19,7 @@ input[type="button"]:hover {
 }
 
 body {
-  background: linear-gradient(90deg, #000000, transparent), url("back.png");
+  background: linear-gradient(90deg, #000000, transparent), url("images/back.png");
   background-size: 128px;
   text-align: center;
   --button_num: 4;
