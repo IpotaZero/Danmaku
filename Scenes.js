@@ -42,7 +42,7 @@ let b0 = {
     }]
 };
 
-ImgData.Nicotine = new Image(); ImgData.Nicotine.src = "images/Nicotine_resize.png";
+ImgData.NicotineE = new Image(); ImgData.NicotineE.src = "images/Nicotine_resize.png";
 ImgData.Fructose = new Image(); ImgData.Fructose.src = "images/Fructose_resize.png";
 ImgData.Title = new Image(); ImgData.Title.src = "images/Title_resize.png";
 
@@ -59,9 +59,9 @@ SoundData.bgm_op = new Audio("sounds/bgm_op.wav");
 let stories = [
     [
         ["bgm", SoundData.Guilt],
-        ["text", "Nicotine:\nBonjour! 非行少年! お巡りさんだぞ!", ImgData.Nicotine],
-        ["text", "Nicotine:\nこんな夜中に街をうろつきおって...", ImgData.Nicotine],
-        ["text", "Nicotine:\n今から貴様に罰を与えてやろう!", ImgData.Nicotine],
+        ["text", "Nicotine:\nBonjour! 非行少年! お巡りさんだぞ!", ImgData.NicotineE],
+        ["text", "Nicotine:\nこんな夜中に街をうろつきおって...", ImgData.NicotineE],
+        ["text", "Nicotine:\n今から貴様に罰を与えてやろう!", ImgData.NicotineE],
         ["enemy", EnemiesData.enemy_0]
     ],
     [
@@ -230,8 +230,6 @@ const Scene0 = class extends Scene {
                     bullets = [];
                 }
             }
-
-
         });
 
         //enemyとbulletの関係
@@ -354,11 +352,17 @@ const Scene0 = class extends Scene {
             }
         });
 
+
+        let life_bar_colour = "rgba(255,255,255,0.8)";
         //敵
         enemies.forEach((e) => {
+            if (e.muteki) {
+                life_bar_colour = "rgba(255,0,0,0.8)";
+            }
+
             //体力バー
-            IrectC(e.p.x - e.r, e.p.y - e.r - 12, 2 * e.r * e.life / e.maxlife, 6, "rgba(255,255,255,0.8)");
-            IrectC(e.p.x - e.r, e.p.y - e.r - 12, 2 * e.r, 6, "white", "stroke", 2);
+            IrectC(e.p.x - e.r, e.p.y - e.r - 12, 2 * e.r * e.life / e.maxlife, 6, life_bar_colour);
+            IrectC(e.p.x - e.r, e.p.y - e.r - 12, 2 * e.r, 6, life_bar_colour, "stroke", 2);
             //円
             IcircleC(e.p.x, e.p.y, e.r, "white", "stroke", 2);
             //画像
@@ -366,10 +370,9 @@ const Scene0 = class extends Scene {
         });
 
         //自機
-        ctx.globalAlpha = 1 - player.inv / 24;
-        IcircleC(player.p.x, player.p.y, player.r, "red");
+        let player_colour = "rgba(255,0,0," + (1 - player.inv / 24) + ")"
+        IcircleC(player.p.x, player.p.y, player.r, player_colour);
         IcircleC(player.p.x, player.p.y, player.r + 12, "white", "stroke", 2);
-        ctx.globalAlpha = 1;
 
         SoundData.text = false;
 
@@ -399,15 +402,23 @@ const Scene0 = class extends Scene {
                 "score:" + this.score,
                 "life:" + player.life,
                 "invisible:" + player.inv
-            ]);
+            ]
+        );
 
+        Itext(null, 200, Iheight + 200 - fontsize, "player_life:");
+
+        Ifont(24, "lightgreen", "serif");
+        Itext(null, 200 + fontsize * 10 / 2, Iheight + 200 - fontsize, "★".repeat(player.life));
+
+        Irect(200, Iheight + 200, (width - 200 - 20) * (enemies[0].life / enemies[0].maxlife), 20, life_bar_colour);
+        Irect(200, Iheight + 200, (width - 200 - 20), 20, life_bar_colour, "stroke", 4);
 
         this.story();
 
         if (this.pause) {
             SoundData.text = true;
             Ifont(48, "white", "serif");
-            Itext(this.frame1, width - 5 * fontsize / 2, height, "Pause");
+            Itext(this.frame1, 0, height, "Pause");
         }
     }
 }

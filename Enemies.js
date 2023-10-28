@@ -41,7 +41,7 @@ EnemiesData.enemy_0 = {
 };
 
 EnemiesData.enemy_1 = {
-  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: ImgData.NicotinE,
+  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: ImgData.NicotineE,
   Update: (me) => {
 
     if (me.frame < 24) {
@@ -75,7 +75,7 @@ EnemiesData.enemy_1 = {
 };
 
 EnemiesData.enemy_2 = {
-  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, l: -24, app: ImgData.NicotinE,
+  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, l: -24, app: ImgData.NicotineE,
   Update: (me) => {
 
     if (me.frame < 24) {
@@ -103,7 +103,7 @@ EnemiesData.enemy_2 = {
 };
 
 EnemiesData.enemy_3 = {
-  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: ImgData.NicotinE,
+  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: ImgData.NicotineE,
   Update: (me) => {
 
     if (me.frame < 24) {
@@ -127,7 +127,7 @@ EnemiesData.enemy_3 = {
 };
 
 EnemiesData.enemy_4 = {
-  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: ImgData.NicotinE,
+  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: ImgData.NicotineE,
   Update: (me) => {
 
     if (me.frame < 24) {
@@ -157,7 +157,7 @@ EnemiesData.enemy_4 = {
 };
 
 EnemiesData.enemy_5 = {
-  p: new vec(gamewidth / 2, gameheight / 2), life: 300, maxlife: 300, frame: 0, r: 48, hakkyou: false, app: ImgData.NicotinE,
+  p: new vec(gamewidth / 2, gameheight / 2), life: 300, maxlife: 300, frame: 0, r: 48, hakkyou: false, app: ImgData.NicotineE,
   Update: (me) => {
 
     let interval = me.life > me.maxlife / 2 ? 16 : 8;
