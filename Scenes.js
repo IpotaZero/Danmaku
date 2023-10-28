@@ -66,6 +66,7 @@ let stories = [
         ["text", "Nicotine:\nやーらーれーたー", ImgData.Nicotine],
         ["text", "Nicotine:\nさて、本物の警察が来る前に\n僕はお暇させてもらうよ!", ImgData.Nicotine],
         ["text", "Nicotine:\nAu revoir!", ImgData.Nicotine],
+        ["score"],
         ["end"]
     ],
     [
@@ -76,6 +77,7 @@ let stories = [
         ["enemy", EnemiesData.fructose_0],
         ["text", "Fructose:\nまあ、こんなもんだよね、人間って", ImgData.Fructose],
         ["text", "Fructose:\nいくら魔法が使えたって、\n上位存在には手も足も出ないんだ", ImgData.Fructose],
+        ["score"],
         ["end"]
     ]
 ];
@@ -116,8 +118,6 @@ const Scene0 = class extends Scene {
 
         this.ending = false;
         this.endingFrame = 0;
-
-        BGM.currentTime = 0;
     }
 
     End() {
@@ -195,12 +195,17 @@ const Scene0 = class extends Scene {
                 case "bgm":
                     BGM = s[1];
                     BGM.volume = 0.4;
+                    BGM.currentTime = 0;
                     playSound(BGM, "as bgm");
                     this.storyNum++;
                     break;
                 case "end":
                     this.ending = true;
                     this.storyMode = false;
+                    break;
+                case "score":
+                    t = "score: " + this.score;
+                    break;
                 default:
                     console.log("Error_story")
             }
@@ -234,7 +239,7 @@ const Scene0 = class extends Scene {
             let p = { ...player };
             p.r += 12;
             if (!config.muteki && player.inv == 0 && b.type == "enemy" && is_touched(p, b)) {
-                if (!b.grazed) { this.graze++; this.score += 100; playSound(SoundData.graze); b.grazed = true; }
+                if (!b.grazed) { this.graze++; this.score += 1000; playSound(SoundData.graze); b.grazed = true; }
                 if (is_touched(player, b)) {
                     player.life--;
                     b.life = 0;
@@ -252,7 +257,7 @@ const Scene0 = class extends Scene {
                 if (b.type == "friend" && !e.muteki && is_touched(e, b)) {
                     e.life -= player.damage;
                     b.life = 0;
-                    this.score++;
+                    this.score += 100;
                     playSound(SoundData.damage);
                     this.enemy_life_bar_frame_colour = "red";
                 }
@@ -373,14 +378,15 @@ const Scene0 = class extends Scene {
             if (e.muteki) {
                 life_bar_colour = "rgba(255,0,0,0.8)";
             }
-
-            //体力バー
-            IrectC(e.p.x - e.r, e.p.y - e.r - 12, 2 * e.r * e.life / e.maxlife, 6, life_bar_colour);
-            IrectC(e.p.x - e.r, e.p.y - e.r - 12, 2 * e.r, 6, life_bar_colour, "stroke", 2);
-            //円
-            IcircleC(e.p.x, e.p.y, e.r, "white", "stroke", 2);
-            //画像
-            if (e.app != null) { ctx.drawImage(e.app, e.p.x - Icamera.p.x - e.r, e.p.y - Icamera.p.y - e.r, 2 * e.r, 2 * e.r); }
+            if (e.frame > 0) {
+                //体力バー
+                IrectC(e.p.x - e.r, e.p.y - e.r - 12, 2 * e.r * e.life / e.maxlife, 6, life_bar_colour);
+                IrectC(e.p.x - e.r, e.p.y - e.r - 12, 2 * e.r, 6, life_bar_colour, "stroke", 2);
+                //円
+                IcircleC(e.p.x, e.p.y, e.r, "white", "stroke", 2);
+                //画像
+                if (e.app != null) { ctx.drawImage(e.app, e.p.x - Icamera.p.x - e.r, e.p.y - Icamera.p.y - e.r, 2 * e.r, 2 * e.r); }
+            }
         });
 
         //自機
