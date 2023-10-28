@@ -59,7 +59,7 @@ SoundData.bgm_op = new Audio("sounds/bgm_op.wav");
 let stories = [
     [
         ["bgm", SoundData.Guilt],
-        ["text", "Nicotine:\nHallo! 非行少年! お巡りさんだぞ!", ImgData.Nicotine],
+        ["text", "Nicotine:\nBonjour! 非行少年! お巡りさんだぞ!", ImgData.Nicotine],
         ["text", "Nicotine:\nこんな夜中に街をうろつきおって...", ImgData.Nicotine],
         ["text", "Nicotine:\n今から貴様に罰を与えてやろう!", ImgData.Nicotine],
         ["enemy", EnemiesData.enemy_0]
@@ -191,6 +191,10 @@ const Scene0 = class extends Scene {
             if (image != null) { ctx.drawImage(image, 350, Iheight - 400, 400, 400); }
 
             Itext5(this.storyFrame, 200, Iheight + fontsize, fontsize, t);
+
+            if (this.storyFrame >= t.length && (this.storyFrame % 12 < 6)) {
+                Itext(null, 200, Iheight + fontsize * (t.split("\n").length + 1), "[Z]")
+            }
 
             if (pushed.includes("ok")) { this.storyNum++; this.storyFrame = 0; }
 
