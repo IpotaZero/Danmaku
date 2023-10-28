@@ -21,17 +21,6 @@
   <script src="Scenes.js"></script>
 
   <script>
-    //bodyにボタンを追加
-    const buttons = { "bullet_mode": "change_bullet_mode", "angle_mode": "change_angle_mode", "muteBGM": "muteBGM", "muteSE": "muteSE" };
-    const keys = Object.keys(buttons)
-    $(function () {
-      for (let key of keys) {
-        $("#body").append("<input type='button' id=" + key + " value=" + buttons[key] + " onclick='button(id);'></input>");
-      }
-      //ボタンの数をcss側に伝えます
-      $("body").css("--button_num", keys.length)
-    });
-
     SoundData.click = new Audio("sounds/click.mp3");
 
     function button(id) {

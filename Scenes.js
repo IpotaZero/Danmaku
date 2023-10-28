@@ -62,14 +62,21 @@ let stories = [
         ["text", "Nicotine:\nBonjour! 非行少年! お巡りさんだぞ!", ImgData.Nicotine],
         ["text", "Nicotine:\nこんな夜中に街をうろつきおって...", ImgData.Nicotine],
         ["text", "Nicotine:\n今から貴様に罰を与えてやろう!", ImgData.Nicotine],
-        ["enemy", EnemiesData.enemy_0]
+        ["enemy", EnemiesData.enemy_0],
+        ["text", "Nicotine:\nやーらーれーたー", ImgData.Nicotine],
+        ["text", "Nicotine:\nさて、本物の警察が来る前に\n僕はお暇させてもらうよ!", ImgData.Nicotine],
+        ["text", "Nicotine:\nAu revoir!", ImgData.Nicotine],
+        ["end"]
     ],
     [
         ["bgm", SoundData.Conflict],
         ["text", "Fructose:\nおいしいものはさァ", ImgData.Fructose],
         ["text", "Fructose:\n食べるかァ、食べないかァ、迷っちゃうよね", ImgData.Fructose],
         ["text", "Fructose:\nそれはナゼなら、\nおいしいものは罪でできているから!", ImgData.Fructose],
-        ["enemy", EnemiesData.fructose_0]
+        ["enemy", EnemiesData.fructose_0],
+        ["text", "Fructose:\nまあ、こんなもんだよね、人間って", ImgData.Fructose],
+        ["text", "Fructose:\nいくら魔法が使えたって、\n上位存在には手も足も出ないんだ", ImgData.Fructose],
+        ["end"]
     ]
 ];
 
@@ -183,6 +190,7 @@ const Scene0 = class extends Scene {
                 case "enemy":
                     enemies = [{ ...s[1] }];
                     this.storyMode = false;
+                    this.storyNum++;
                     break;
                 case "bgm":
                     BGM = s[1];
@@ -190,6 +198,9 @@ const Scene0 = class extends Scene {
                     playSound(BGM, "as bgm");
                     this.storyNum++;
                     break;
+                case "end":
+                    this.ending = true;
+                    this.storyMode = false;
                 default:
                     console.log("Error_story")
             }
@@ -378,10 +389,8 @@ const Scene0 = class extends Scene {
         IcircleC(player.p.x, player.p.y, player.r + 12, "white", "stroke", 2);
 
         SoundData.text = false;
-
         Ifont(24, "white", "serif");
-
-        Itext(100, -Icamera.p.x, gameheight + fontsize - Icamera.p.y, "ここに装飾とかお願いします");
+        Itext(null, -Icamera.p.x, gameheight + fontsize - Icamera.p.y, "ここに装飾とかお願いします");
 
         //下の
         Irect(0, Iheight, width, height - Iheight, "#0F0F0F");
@@ -528,6 +537,19 @@ const Scene2 = class extends Scene {
         }
 
         this.frame++;
+    }
+
+    End() {
+        //bodyにボタンを追加
+        const buttons = { "bullet_mode": "change_bullet_mode", "angle_mode": "change_angle_mode", "muteBGM": "muteBGM", "muteSE": "muteSE" };
+        const keys = Object.keys(buttons)
+        $(function () {
+            for (let key of keys) {
+                $("#body").append("<input type='button' id=" + key + " value=" + buttons[key] + " onclick='button(id);'></input>");
+            }
+            //ボタンの数をcss側に伝えます
+            $("body").css("--button_num", keys.length)
+        });
     }
 
 }

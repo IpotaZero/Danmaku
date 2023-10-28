@@ -11,7 +11,7 @@ ImgData.NicotineE = new Image(); ImgData.NicotineE.src = "images/NicotineE.png";
 EnemiesData.enemy_first = {
   p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: null, muteki: true,
   Update: (me) => {
-    me.life = 100;
+    me.frame++;
   }
 };
 
@@ -186,7 +186,7 @@ EnemiesData.enemy_5 = {
       bullets = [];
       playSound(SoundData.KO);
 
-      scene0.ending = true;
+      scene0.storyMode = true;
     }
   }
 };
@@ -342,7 +342,7 @@ EnemiesData.fructose_5 = {
       scene0.score += me.maxlife ** 2;
       playSound(SoundData.KO);
 
-      scene0.ending = true;
+      scene0.storyMode = true;
     }
   }
 };
