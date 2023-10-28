@@ -74,7 +74,7 @@ let stories = [
 ];
 
 function wall(obj) { return obj.p.x < 0 || gamewidth < obj.p.x || obj.p.y < 0 || gameheight < obj.p.y; }
-function istouched(obj0, obj1) { return obj0.p.sub(obj1.p).length <= obj0.r + obj1.r; }
+function is_touched(obj0, obj1) { return obj0.p.sub(obj1.p).length <= obj0.r + obj1.r; }
 
 const Scene0 = class extends Scene {
     constructor() {
@@ -168,30 +168,37 @@ const Scene0 = class extends Scene {
             Ifont(24, "white", "serif");
 
             let t = "";
-
             let image = null;
 
             SoundData.text = true;
-
             let s = stories[this.chapter][this.storyNum];
 
-            if (s[0] == "text") {
-                t = s[1];
-                image = s[2];
-            } else if (s[0] == "enemy") {
-                enemies = [{ ...s[1] }];
-                this.storyMode = false;
-            } else if (s[0] == "bgm") {
-                BGM = s[1];
-                BGM.volume = 0.4;
-                playSound(BGM, "as bgm");
-                this.storyNum++;
+            switch (s[0]) {
+                case "text":
+                    t = s[1];
+                    image = s[2];
+                    break;
+                case "enemy":
+                    enemies = [{ ...s[1] }];
+                    this.storyMode = false;
+                    break;
+                case "bgm":
+                    BGM = s[1];
+                    BGM.volume = 0.4;
+                    playSound(BGM, "as bgm");
+                    this.storyNum++;
+                    break;
+                default:
+                    console.log("Error_story")
             }
 
+            //画像
             if (image != null) { ctx.drawImage(image, 350, Iheight - 400, 400, 400); }
 
+            //ストーリー
             Itext5(this.storyFrame, 200, Iheight + fontsize, fontsize, t);
 
+            //Z入力を期待する
             if (this.storyFrame >= t.length && (this.storyFrame % 12 < 6)) {
                 Itext(null, 200, Iheight + fontsize * (t.split("\n").length + 1), "[Z]")
             }
@@ -209,11 +216,13 @@ const Scene0 = class extends Scene {
         //弾
         bullets.forEach((b) => {
             b.f.forEach((fun) => { fun(b); });
+
+            //playerとbulletの関係
             let p = { ...player };
             p.r += 12;
-            if (!config.muteki && player.inv == 0 && b.type == "enemy" && istouched(p, b)) {
+            if (!config.muteki && player.inv == 0 && b.type == "enemy" && is_touched(p, b)) {
                 if (!b.grazed) { this.graze++; this.score += 100; playSound(SoundData.graze); b.grazed = true; }
-                if (istouched(player, b)) {
+                if (is_touched(player, b)) {
                     player.life--;
                     b.life = 0;
                     player.p = new vec(20, gameheight / 2);
@@ -221,24 +230,26 @@ const Scene0 = class extends Scene {
                     bullets = [];
                 }
             }
+
+
+        });
+
+        //enemyとbulletの関係
+        enemies.forEach((e) => {
+            bullets.forEach((b) => {
+                if (b.type == "friend" && !e.muteki && is_touched(e, b)) {
+                    e.life -= player.damage;
+                    b.life = 0;
+                    this.score++;
+                    playSound(SoundData.damage);
+                }
+
+            });
+            e.Update(e);
         });
 
         enemies.push(...nextEnemies);
         nextEnemies = [];
-
-        //敵
-        enemies.forEach((e) => {
-            bullets.forEach((b) => {
-                if (b.type == "friend" && !e.muteki && istouched(e, b)) {
-                    e.life -= player.damage;
-                    b.life = 0;
-                    this.score++;
-                    SoundData.damage.currentTime = 0;
-                    playSound(SoundData.damage);
-                }
-            });
-            e.Update(e);
-        });
 
         enemies = enemies.filter((e) => { return e.life > 0; });
         bullets = bullets.filter((b) => { return b.life > 0; });
@@ -373,7 +384,23 @@ const Scene0 = class extends Scene {
 
         Ifont(24, "white", "serif");
 
-        Itext4(this.frame, 0, Iheight + fontsize, fontsize, ["x:" + player.p.x, "y:" + player.p.y, "camera.x:" + Math.floor(Icamera.p.x), "camera.y:" + Math.floor(Icamera.p.y), "bullets:" + bullets.length, "bulletsOnScreen:" + bulletsOnScreen, "graze:" + this.graze, "score:" + this.score, "life:" + player.life, "invisible:" + player.inv]);
+        Itext4(this.frame, 0, Iheight + fontsize, fontsize,
+            [
+                /*
+                "x:" + player.p.x,
+                "y:" + player.p.y,
+                "camera.x:" + Math.floor(Icamera.p.x),
+                "camera.y:" + Math.floor(Icamera.p.y),
+                
+                "bullets:" + bullets.length,
+                "bullets_on_Screen:" + bulletsOnScreen,
+                */
+                "graze:" + this.graze,
+                "score:" + this.score,
+                "life:" + player.life,
+                "invisible:" + player.inv
+            ]);
+
 
         this.story();
 

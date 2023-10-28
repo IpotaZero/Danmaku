@@ -9,7 +9,7 @@ SoundData.charge = new Audio("sounds/charge0.wav");
 ImgData.NicotineE = new Image(); ImgData.NicotineE.src = "images/NicotineE.png";
 
 EnemiesData.enemy_first = {
-  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: null,
+  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: null, muteki: true,
   Update: (me) => {
     me.life = 100;
   }
