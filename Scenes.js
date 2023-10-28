@@ -42,7 +42,7 @@ let b0 = {
     }]
 };
 
-ImgData.NicotineE = new Image(); ImgData.NicotineE.src = "images/Nicotine_resize.png";
+ImgData.Nicotine = new Image(); ImgData.Nicotine.src = "images/Nicotine_resize.png";
 ImgData.Fructose = new Image(); ImgData.Fructose.src = "images/Fructose_resize.png";
 ImgData.Title = new Image(); ImgData.Title.src = "images/Title_resize.png";
 
@@ -59,9 +59,9 @@ SoundData.bgm_op = new Audio("sounds/bgm_op.wav");
 let stories = [
     [
         ["bgm", SoundData.Guilt],
-        ["text", "Nicotine:\nBonjour! 非行少年! お巡りさんだぞ!", ImgData.NicotineE],
-        ["text", "Nicotine:\nこんな夜中に街をうろつきおって...", ImgData.NicotineE],
-        ["text", "Nicotine:\n今から貴様に罰を与えてやろう!", ImgData.NicotineE],
+        ["text", "Nicotine:\nBonjour! 非行少年! お巡りさんだぞ!", ImgData.Nicotine],
+        ["text", "Nicotine:\nこんな夜中に街をうろつきおって...", ImgData.Nicotine],
+        ["text", "Nicotine:\n今から貴様に罰を与えてやろう!", ImgData.Nicotine],
         ["enemy", EnemiesData.enemy_0]
     ],
     [
@@ -73,7 +73,7 @@ let stories = [
     ]
 ];
 
-function wall(obj) { return obj.p.x < 0 || gamewidth < obj.p.x || obj.p.y < 0 || gameheight < obj.p.y; }
+function wall(obj) { return obj.p.x + obj.r < 0 || gamewidth < obj.p.x - obj.r || obj.p.y + obj.r < 0 || gameheight < obj.p.y - obj.r; }
 function is_touched(obj0, obj1) { return obj0.p.sub(obj1.p).length <= obj0.r + obj1.r; }
 
 const Scene0 = class extends Scene {
@@ -83,6 +83,8 @@ const Scene0 = class extends Scene {
         this.bullet_mode2 = "ichibu";
         this.angle_mode = "jidou";
         this.chapter = 0;
+
+        this.enemy_life_bar_frame_colour = "white";
     }
 
     Start() {
@@ -233,6 +235,7 @@ const Scene0 = class extends Scene {
         });
 
         //enemyとbulletの関係
+        this.enemy_life_bar_frame_colour = "white";
         enemies.forEach((e) => {
             bullets.forEach((b) => {
                 if (b.type == "friend" && !e.muteki && is_touched(e, b)) {
@@ -240,6 +243,7 @@ const Scene0 = class extends Scene {
                     b.life = 0;
                     this.score++;
                     playSound(SoundData.damage);
+                    this.enemy_life_bar_frame_colour = "red";
                 }
 
             });
@@ -352,9 +356,8 @@ const Scene0 = class extends Scene {
             }
         });
 
-
-        let life_bar_colour = "rgba(255,255,255,0.8)";
         //敵
+        let life_bar_colour = "rgba(255,255,255,0.8)";
         enemies.forEach((e) => {
             if (e.muteki) {
                 life_bar_colour = "rgba(255,0,0,0.8)";
@@ -400,7 +403,6 @@ const Scene0 = class extends Scene {
                 */
                 "graze:" + this.graze,
                 "score:" + this.score,
-                "life:" + player.life,
                 "invisible:" + player.inv
             ]
         );
@@ -410,8 +412,12 @@ const Scene0 = class extends Scene {
         Ifont(24, "lightgreen", "serif");
         Itext(null, 200 + fontsize * 10 / 2, Iheight + 200 - fontsize, "★".repeat(player.life));
 
-        Irect(200, Iheight + 200, (width - 200 - 20) * (enemies[0].life / enemies[0].maxlife), 20, life_bar_colour);
-        Irect(200, Iheight + 200, (width - 200 - 20), 20, life_bar_colour, "stroke", 4);
+        //大きな体力バー
+        if (enemies.length > 0) {
+            Irect(200, Iheight + 200, (width - 200 - 20) * (enemies[0].life / enemies[0].maxlife), 20, life_bar_colour);
+            Irect(200, Iheight + 200, (width - 200 - 20), 20, this.enemy_life_bar_frame_colour, "stroke", 4);
+        }
+
 
         this.story();
 

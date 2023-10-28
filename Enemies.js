@@ -31,7 +31,7 @@ EnemiesData.enemy_0 = {
     me.frame++;
 
     if (me.life <= 0) {
-      nextEnemies.push({ ...EnemiesData["enemy_1"] });
+      nextEnemies.push({ ...EnemiesData["enemy_3"] });
       bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
@@ -52,12 +52,16 @@ EnemiesData.enemy_1 = {
       }
 
       if (me.frame % 12 == 0) {
-        bullets.push(...remodel([bullet_model], ["type", "neutral", "p", me.p, "v", new vec(60, 0), "aim", player.p,
+        bullets.push(...remodel([bullet_model], [
+          "type", "neutral",
+          "p", me.p,
+          "v", new vec(60, 0),
+          "aim", player.p,
           "f", (me0) => {
-            nextBullets.push(...remodel([bullet_model], ["type", "neutral", "p", me0.p,
-              "wait", "frame", 12, (me1) => {
-                me1.life = 0; nextBullets.push(...remodel([bullet_model], ["colourful", me.frame, "p", me1.p, "v", new vec(12, 0), "aim", player.p, "f", (me) => { me.colour += 12; }, "wait", "frame", 6, (me2) => { me2.life = 0; }, "ex", 16, me1.p]));
-              }]));
+            nextBullets.push(...remodel([bullet_model], ["type", "neutral", "p", me0.p, "wait", "frame", 16, (me1) => {
+              me1.life = 0;
+              nextBullets.push(...remodel([bullet_model], ["colourful", me.frame, "p", me1.p, "v", new vec(12, 0), "f", (me) => { me.colour += 12; }, "wait", "frame", 6, (me2) => { me2.life = 0; }, "ex", 16, me1.p]));
+            }]));
           }]));
       }
     }
@@ -93,7 +97,7 @@ EnemiesData.enemy_2 = {
 
 
     if (me.life <= 0) {
-      nextEnemies.push({ ...EnemiesData["enemy_3"] });
+      nextEnemies.push({ ...EnemiesData["enemy_5"] });
       bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
@@ -147,7 +151,7 @@ EnemiesData.enemy_4 = {
     me.frame++;
 
     if (me.life <= 0) {
-      nextEnemies.push({ ...EnemiesData["enemy_5"] });
+      nextEnemies.push({ ...EnemiesData["enemy_1"] });
       bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
