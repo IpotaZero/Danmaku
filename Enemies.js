@@ -291,14 +291,13 @@ EnemiesData.fructose_2 = {
     } else {
       if (me.frame % 12 == 0) {
         bullets.push(...remodel([bullet_model], [
+          "app", "laser",
+          "r", 2,
           "p", me.p,
-          "frame", 0,
-          "move", player.p, 48, x => -((x - 1) ** 2) + 1,
-          "f", (me0) => {
-            me0.frame++;
-            nextBullets.push(...remodel([bullet_model], ["app", "laser", "r", me0.frame / 3, "p", me0.p, "v", new vec(1, 0).rot(me0.frame / 12), "cross", me0.frame * 4, "delete", 1]));
-          },
-          "delete", 48
+          "v", new vec(12, 0),
+          "aim", player.p,
+          "nway", 3, Math.PI / 6, me.p,
+          "cross", 30
         ]));
       }
     }

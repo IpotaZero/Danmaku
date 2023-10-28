@@ -142,17 +142,14 @@ function remodel(bulletArr, pro) {
         buls.forEach((b) => {
           if (b.v.x == 0 && b.v.y == 0) {
             b.v = new vec(0.01, 0);
-            for (let i = 0; i < 4; i++) {
-              bul1.push(...remodel([b], ["laser", size / 2, "rev", Math.PI / 2 * i, b.p, "v", new vec(0, 0)]));
-            }
-            b.v = new vec(0, 0)
-          } else {
-            for (let i = 0; i < 4; i++) {
-              bul1.push(...remodel([b], ["laser", size / 2, "rev", Math.PI / 2 * i, b.p]));
-            }
           }
-          c.push(...remodel(bul1, ["v", b.v]));
+
+          for (let i = 0; i < 4; i++) {
+            bul1.push(...remodel([b], ["laser", size / 2, "rev", Math.PI / 2 * i, b.p, "v", b.v]));
+          }
+
         });
+        c.push(...bul1);
         i++; break;
 
       //["circle",直径dia]円(arrowとかと大きさの感覚を合わせるために直径で指定)
