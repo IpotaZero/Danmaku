@@ -230,7 +230,7 @@ EnemiesData.fructose_0 = {
             ]));
           },
           "rot", 2 * Math.PI / 64 * r,
-          "ex", 64, me.p
+          "ex", 48, me.p
         ]));
       }
     }
