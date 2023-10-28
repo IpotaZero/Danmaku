@@ -19,8 +19,8 @@ function circleMove(p, frame, radius, cycle, rad = 0) {
   return p.add(new vec(Math.cos(frame * Math.PI * 2 / cycle + rad), Math.sin(frame * Math.PI * 2 / cycle + rad)).mlt(radius));
 }
 
-function linearMove(frame, t, p0, p1) {
-  return p0.add(p1.sub(p0).mlt(frame / t));
+function linearMove(frame, t, p0, p1, fun = x => x) {
+  return p0.add(p1.sub(p0).mlt(fun(frame / t)));
 }
 
 function degToRad(d) {

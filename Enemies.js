@@ -229,7 +229,8 @@ EnemiesData.fructose_0 = {
               "rev", 2 * Math.PI / 72 * me.frame, me.p.add(me.v)
             ]));
           },
-          "rot", 2 * Math.PI / 64 * r, "ex", 32, me.p
+          "rot", 2 * Math.PI / 64 * r,
+          "ex", 64, me.p
         ]));
       }
     }
@@ -283,22 +284,44 @@ EnemiesData.fructose_1 = {
 
 
 EnemiesData.fructose_2 = {
-  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: null,
+  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: null, from: new vec(gamewidth / 2, gameheight / 2), to: new vec(0, 0),
   Update: (me) => {
 
     if (me.frame < 24) {
       me.p = vrs.p.add(new vec(gamewidth / 2, gameheight / 2).sub(vrs.p).mlt(me.frame / 24));
     } else {
-      if (me.frame % 12 == 0) {
-        bullets.push(...remodel([bullet_model], [
-          "app", "laser",
-          "r", 2,
-          "p", me.p,
-          "v", new vec(12, 0),
-          "aim", player.p,
-          "nway", 3, Math.PI / 6, me.p,
-          "cross", 30
-        ]));
+      me.p = linearMove((me.frame - 25) % 48, 48, me.from, me.to, x => x ** 2);
+
+      if ((me.frame - 24) % 48 == 0) {
+        me.to = new vec(gamewidth / 2, gameheight / 2).add(new vec(gamewidth / 4, gameheight / 4).mlt(Math.random() * 2 - 1));
+        me.from = me.p;
+      }
+
+      if ((me.frame - 24) % 24 == 0) {
+        for (let i = 1; i < 5; i++) {
+          bullets.push(...remodel([bullet_model], [
+            "colourful", me.frame,
+            "p", me.p,
+            "v", new vec(24 / i, 0),
+            "aim", player.p,
+            "f", (me0) => {
+              if (me0.p.sub(player.p).length < 240) {
+                me0.life = 0;
+                nextBullets.push(...remodel([bullet_model], ["p", me0.p, "v", new vec(12, 0), "frame", 0, "f", (me1) => {
+                  me1.frame++;
+                  nextBullets.push(...remodel([bullet_model], ["app", "laser", "r", 4, "colour", me0.colour, "p", me1.p.add(me1.v), "v", new vec(0.1, 0), "rot", me1.frame / 12, "cross", 20, "delete", 1]));
+                }, "ex", 12, me0.p]));
+              }
+
+              if (me0.frame < 12) {
+                me0.v = player.p.sub(me0.p).nor().mlt(me0.v.length)
+              }
+            },
+            "frame", 0,
+            "f", (me0) => { me0.frame++; nextBullets.push(...remodel([bullet_model], ["app", "laser", "r", 8, "colour", me0.colour, "p", me0.p.add(me0.v), "v", new vec(0.1, 0), "rot", me0.frame / 12, "cross", 40, "delete", 1])); },
+            //"nway", 3, Math.PI / 12, me.p,
+          ]));
+        }
       }
     }
 
