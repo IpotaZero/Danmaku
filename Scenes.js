@@ -46,20 +46,6 @@ ImgData.Nicotine = new Image(); ImgData.Nicotine.src = "images/Nicotine_resize.p
 ImgData.Fructose = new Image(); ImgData.Fructose.src = "images/Fructose_resize.png";
 ImgData.Title = new Image(); ImgData.Title.src = "images/Title_resize.png";
 
-let stories = [
-    [
-        ["text", "Nicotine:\nHallo! 非行少年! お巡りさんだぞ!", ImgData.Nicotine],
-        ["text", "Nicotine:\nこんな夜中に街をうろつきおって...", ImgData.Nicotine],
-        ["text", "Nicotine:\n今から貴様に罰を与えてやろう!", ImgData.Nicotine],
-        ["enemy", EnemiesData.enemy_0]
-    ],
-    [
-        ["text", "Fructose:\nおいしいものはさァ", ImgData.Fructose],
-        ["text", "Fructose:\n食べるかァ、食べないかァ、迷っちゃうよね", ImgData.Fructose],
-        ["text", "Fructose:\nそれはナゼなら、\nおいしいものは罪でできているから!", ImgData.Fructose],
-        ["enemy", EnemiesData.fructose_0]
-    ]
-];
 
 SoundData.textSending = new Audio("Sounds/p.wav");
 SoundData.decision = new Audio("sounds/p.wav");
@@ -70,8 +56,34 @@ SoundData.Guilt = new Audio("sounds/Guilt.wav");
 SoundData.Conflict = new Audio("sounds/Conflict.wav");
 SoundData.bgm_op = new Audio("sounds/bgm_op.wav");
 
-function wall(obj) { return obj.p.x < 0 || gamewidth < obj.p.x || obj.p.y < 0 || gameheight < obj.p.y; }
-function istouched(obj0, obj1) { return obj0.p.sub(obj1.p).length <= obj0.r + obj1.r; }
+let stories = [
+    [
+        ["bgm", SoundData.Guilt],
+        ["text", "Nicotine:\nBonjour! 非行少年! お巡りさんだぞ!", ImgData.Nicotine],
+        ["text", "Nicotine:\nこんな夜中に街をうろつきおって...", ImgData.Nicotine],
+        ["text", "Nicotine:\n今から貴様に罰を与えてやろう!", ImgData.Nicotine],
+        ["enemy", EnemiesData.enemy_0],
+        ["text", "Nicotine:\nやーらーれーたー", ImgData.Nicotine],
+        ["text", "Nicotine:\nさて、本物の警察が来る前に\n僕はお暇させてもらうよ!", ImgData.Nicotine],
+        ["text", "Nicotine:\nAu revoir!", ImgData.Nicotine],
+        ["score"],
+        ["end"]
+    ],
+    [
+        ["bgm", SoundData.Conflict],
+        ["text", "Fructose:\nおいしいものはさァ", ImgData.Fructose],
+        ["text", "Fructose:\n食べるかァ、食べないかァ、迷っちゃうよね", ImgData.Fructose],
+        ["text", "Fructose:\nそれはナゼなら、\nおいしいものは罪でできているから!", ImgData.Fructose],
+        ["enemy", EnemiesData.fructose_0],
+        ["text", "Fructose:\nまあ、こんなもんだよね、人間って", ImgData.Fructose],
+        ["text", "Fructose:\nいくら魔法が使えたって、\n上位存在には手も足も出ないんだ", ImgData.Fructose],
+        ["score"],
+        ["end"]
+    ]
+];
+
+function wall(obj) { return obj.p.x + obj.r < 0 || gamewidth < obj.p.x - obj.r || obj.p.y + obj.r < 0 || gameheight < obj.p.y - obj.r; }
+function is_touched(obj0, obj1) { return obj0.p.sub(obj1.p).length <= obj0.r + obj1.r; }
 
 const Scene0 = class extends Scene {
     constructor() {
@@ -80,6 +92,8 @@ const Scene0 = class extends Scene {
         this.bullet_mode2 = "ichibu";
         this.angle_mode = "jidou";
         this.chapter = 0;
+
+        this.enemy_life_bar_frame_colour = "white";
     }
 
     Start() {
@@ -88,9 +102,6 @@ const Scene0 = class extends Scene {
         this.pause = false;
 
         this.star = [];
-
-        BGM.volume = 0.4;
-        playSound(BGM, "as bgm");
 
         bullets = [];
         enemies = [{ ...EnemiesData.enemy_first }];
@@ -107,8 +118,6 @@ const Scene0 = class extends Scene {
 
         this.ending = false;
         this.endingFrame = 0;
-
-        BGM.currentTime = 0;
     }
 
     End() {
@@ -152,6 +161,8 @@ const Scene0 = class extends Scene {
 
         if (this.ending) {
             this.endingFrame++;
+
+            BGM.volume = 0.4 * (1 - this.endingFrame / 48);
             Irect(0, 0, width, height, "rgba(0,0,0," + this.endingFrame / 48 + ")");
             if (this.endingFrame == 48) {
                 scenemanager.MoveTo(scene1);
@@ -166,24 +177,49 @@ const Scene0 = class extends Scene {
             Ifont(24, "white", "serif");
 
             let t = "";
-
             let image = null;
 
             SoundData.text = true;
-
             let s = stories[this.chapter][this.storyNum];
 
-            if (s[0] == "text") {
-                t = s[1];
-                image = s[2];
-            } else if ("enemy") {
-                enemies = [{ ...s[1] }];
-                this.storyMode = false;
+            switch (s[0]) {
+                case "text":
+                    t = s[1];
+                    image = s[2];
+                    break;
+                case "enemy":
+                    enemies = [{ ...s[1] }];
+                    this.storyMode = false;
+                    this.storyNum++;
+                    break;
+                case "bgm":
+                    BGM = s[1];
+                    BGM.volume = 0.4;
+                    BGM.currentTime = 0;
+                    playSound(BGM, "as bgm");
+                    this.storyNum++;
+                    break;
+                case "end":
+                    this.ending = true;
+                    this.storyMode = false;
+                    break;
+                case "score":
+                    t = "score: " + this.score;
+                    break;
+                default:
+                    console.log("Error_story")
             }
 
+            //画像
             if (image != null) { ctx.drawImage(image, 350, Iheight - 400, 400, 400); }
 
+            //ストーリー
             Itext5(this.storyFrame, 200, Iheight + fontsize, fontsize, t);
+
+            //Z入力を期待する
+            if (this.storyFrame >= t.length && (this.storyFrame % 12 < 6)) {
+                Itext(null, 200, Iheight + fontsize * (t.split("\n").length + 1), "[Z]")
+            }
 
             if (pushed.includes("ok")) { this.storyNum++; this.storyFrame = 0; }
 
@@ -198,11 +234,13 @@ const Scene0 = class extends Scene {
         //弾
         bullets.forEach((b) => {
             b.f.forEach((fun) => { fun(b); });
+
+            //playerとbulletの関係
             let p = { ...player };
             p.r += 12;
-            if (!config.muteki && player.inv == 0 && b.type == "enemy" && istouched(p, b)) {
-                if (!b.grazed) { this.graze++; this.score += 100; playSound(SoundData.graze); b.grazed = true; }
-                if (istouched(player, b)) {
+            if (!config.muteki && player.inv == 0 && b.type == "enemy" && is_touched(p, b)) {
+                if (!b.grazed) { this.graze++; this.score += 1000; playSound(SoundData.graze); b.grazed = true; }
+                if (is_touched(player, b)) {
                     player.life--;
                     b.life = 0;
                     player.p = new vec(20, gameheight / 2);
@@ -212,22 +250,24 @@ const Scene0 = class extends Scene {
             }
         });
 
-        enemies.push(...nextEnemies);
-        nextEnemies = [];
-
-        //敵
+        //enemyとbulletの関係
+        this.enemy_life_bar_frame_colour = "white";
         enemies.forEach((e) => {
             bullets.forEach((b) => {
-                if (b.type == "friend" && !e.muteki && istouched(e, b)) {
+                if (b.type == "friend" && !e.muteki && is_touched(e, b)) {
                     e.life -= player.damage;
                     b.life = 0;
-                    this.score++;
-                    SoundData.damage.currentTime = 0;
+                    this.score += 100;
                     playSound(SoundData.damage);
+                    this.enemy_life_bar_frame_colour = "red";
                 }
+
             });
             e.Update(e);
         });
+
+        enemies.push(...nextEnemies);
+        nextEnemies = [];
 
         enemies = enemies.filter((e) => { return e.life > 0; });
         bullets = bullets.filter((b) => { return b.life > 0; });
@@ -333,27 +373,30 @@ const Scene0 = class extends Scene {
         });
 
         //敵
+        let life_bar_colour = "rgba(255,255,255,0.8)";
         enemies.forEach((e) => {
-            //体力バー
-            IrectC(e.p.x - e.r, e.p.y - e.r - 12, 2 * e.r * e.life / e.maxlife, 6, "rgba(255,255,255,0.8)");
-            IrectC(e.p.x - e.r, e.p.y - e.r - 12, 2 * e.r, 6, "white", "stroke", 2);
-            //円
-            IcircleC(e.p.x, e.p.y, e.r, "white", "stroke", 2);
-            //画像
-            if (e.app != null) { ctx.drawImage(e.app, e.p.x - Icamera.p.x - e.r, e.p.y - Icamera.p.y - e.r, 2 * e.r, 2 * e.r); }
+            if (e.muteki) {
+                life_bar_colour = "rgba(255,0,0,0.8)";
+            }
+            if (e.frame > 0) {
+                //体力バー
+                IrectC(e.p.x - e.r, e.p.y - e.r - 12, 2 * e.r * e.life / e.maxlife, 6, life_bar_colour);
+                IrectC(e.p.x - e.r, e.p.y - e.r - 12, 2 * e.r, 6, life_bar_colour, "stroke", 2);
+                //円
+                IcircleC(e.p.x, e.p.y, e.r, "white", "stroke", 2);
+                //画像
+                if (e.app != null) { ctx.drawImage(e.app, e.p.x - Icamera.p.x - e.r, e.p.y - Icamera.p.y - e.r, 2 * e.r, 2 * e.r); }
+            }
         });
 
         //自機
-        ctx.globalAlpha = 1 - player.inv / 24;
-        IcircleC(player.p.x, player.p.y, player.r, "red");
+        let player_colour = "rgba(255,0,0," + (1 - player.inv / 24) + ")"
+        IcircleC(player.p.x, player.p.y, player.r, player_colour);
         IcircleC(player.p.x, player.p.y, player.r + 12, "white", "stroke", 2);
-        ctx.globalAlpha = 1;
 
         SoundData.text = false;
-
         Ifont(24, "white", "serif");
-
-        Itext(100, -Icamera.p.x, gameheight + fontsize - Icamera.p.y, "ここに装飾とかお願いします");
+        Itext(null, -Icamera.p.x, gameheight + fontsize - Icamera.p.y, "ここに装飾とかお願いします");
 
         //下の
         Irect(0, Iheight, width, height - Iheight, "#0F0F0F");
@@ -362,14 +405,41 @@ const Scene0 = class extends Scene {
 
         Ifont(24, "white", "serif");
 
-        Itext4(this.frame, 0, Iheight + fontsize, fontsize, ["x:" + player.p.x, "y:" + player.p.y, "camera.x:" + Math.floor(Icamera.p.x), "camera.y:" + Math.floor(Icamera.p.y), "bullets:" + bullets.length, "bulletsOnScreen:" + bulletsOnScreen, "graze:" + this.graze, "score:" + this.score, "life:" + player.life, "invisible:" + player.inv]);
+        Itext4(this.frame, 0, Iheight + fontsize, fontsize,
+            [
+                /*
+                "x:" + player.p.x,
+                "y:" + player.p.y,
+                "camera.x:" + Math.floor(Icamera.p.x),
+                "camera.y:" + Math.floor(Icamera.p.y),
+                
+                "bullets:" + bullets.length,
+                "bullets_on_Screen:" + bulletsOnScreen,
+                */
+                "graze:" + this.graze,
+                "score:" + this.score,
+                "invisible:" + player.inv
+            ]
+        );
+
+        Itext(null, 200, Iheight + 200 - fontsize, "player_life:");
+
+        Ifont(24, "lightgreen", "serif");
+        Itext(null, 200 + fontsize * 10 / 2, Iheight + 200 - fontsize, "★".repeat(player.life));
+
+        //大きな体力バー
+        if (enemies.length > 0) {
+            Irect(200, Iheight + 200, (width - 200 - 20) * (enemies[0].life / enemies[0].maxlife), 20, life_bar_colour);
+            Irect(200, Iheight + 200, (width - 200 - 20), 20, this.enemy_life_bar_frame_colour, "stroke", 4);
+        }
+
 
         this.story();
 
         if (this.pause) {
             SoundData.text = true;
             Ifont(48, "white", "serif");
-            Itext(this.frame1, width - 5 * fontsize / 2, height, "Pause");
+            Itext(this.frame1, 0, height, "Pause");
         }
     }
 }
@@ -392,6 +462,7 @@ const Scene1 = class extends Scene {
         this.option = { "": ["始める", "操作方法", "ストーリー"], "0": ["Stage0", "Stage1"], "00": ["Easy"], "01": ["Easy"] };
 
         BGM = SoundData.bgm_op;
+        BGM.volume = 1;
         BGM.currentTime = 0;
         playSound(BGM, "as bgm");
     }
@@ -416,8 +487,8 @@ const Scene1 = class extends Scene {
                 case "1": Itext5(this.frame1, 0, 100, fontsize, "矢印キーで移動、Shiftキーで低速、AXで回転(デフォでは自動)\nESCでPause"); break;
                 case "2": Itext5(this.frame1, 0, 100, fontsize, "ある日、世界にバグが生じ、奇妙な術、魔法を使うものが現れた!\nあなた↓はそのバグを取り除くために派遣されたプログラムである\n弾幕勝負で魔法使いたちを倒そう!"); break;
 
-                case "000": scene0.chapter = 0; this.black = 1; BGM.pause(); BGM = SoundData.Guilt; break;
-                case "010": scene0.chapter = 1; this.black = 1; BGM.pause(); BGM = SoundData.Conflict; break;
+                case "000": scene0.chapter = 0; this.black = 1; break;
+                case "010": scene0.chapter = 1; this.black = 1; break;
 
                 default:
                     Itext4(this.frame1, fontsize, 100, fontsize, this.option[this.select]);
@@ -434,8 +505,11 @@ const Scene1 = class extends Scene {
             if (pushed.includes("cancel") && this.select.length > 0) { this.select = this.select.slice(0, -1); this.frame1 = 0; playSound(SoundData.cancel); }
         }
 
-        if (this.black > 0) { this.black++; }
-        if (this.black == 48) { scenemanager.MoveTo(scene0); }
+        if (this.black > 0) {
+            this.black++;
+            BGM.volume = 1 - this.black / 48;
+        }
+        if (this.black == 48) { BGM.pause(); scenemanager.MoveTo(scene0); }
 
         Ifont(12);
         Itext(this.frame0, 0, height, "" + this.frame0);
@@ -469,6 +543,19 @@ const Scene2 = class extends Scene {
         }
 
         this.frame++;
+    }
+
+    End() {
+        //bodyにボタンを追加
+        const buttons = { "bullet_mode": "change_bullet_mode", "angle_mode": "change_angle_mode", "muteBGM": "muteBGM", "muteSE": "muteSE" };
+        const keys = Object.keys(buttons)
+        $(function () {
+            for (let key of keys) {
+                $("#body").append("<input type='button' id=" + key + " value=" + buttons[key] + " onclick='button(id);'></input>");
+            }
+            //ボタンの数をcss側に伝えます
+            $("body").css("--button_num", keys.length)
+        });
     }
 
 }

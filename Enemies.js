@@ -9,9 +9,9 @@ SoundData.charge = new Audio("sounds/charge0.wav");
 ImgData.NicotineE = new Image(); ImgData.NicotineE.src = "images/NicotineE.png";
 
 EnemiesData.enemy_first = {
-  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: null,
+  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: null, muteki: true,
   Update: (me) => {
-    me.life = 100;
+    me.frame++;
   }
 };
 
@@ -31,7 +31,7 @@ EnemiesData.enemy_0 = {
     me.frame++;
 
     if (me.life <= 0) {
-      nextEnemies.push({ ...EnemiesData["enemy_1"] });
+      nextEnemies.push({ ...EnemiesData["enemy_3"] });
       bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
@@ -41,7 +41,7 @@ EnemiesData.enemy_0 = {
 };
 
 EnemiesData.enemy_1 = {
-  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: ImgData.NicotinE,
+  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: ImgData.NicotineE,
   Update: (me) => {
 
     if (me.frame < 24) {
@@ -52,12 +52,16 @@ EnemiesData.enemy_1 = {
       }
 
       if (me.frame % 12 == 0) {
-        bullets.push(...remodel([bullet_model], ["type", "neutral", "p", me.p, "v", new vec(60, 0), "aim", player.p,
+        bullets.push(...remodel([bullet_model], [
+          "type", "neutral",
+          "p", me.p,
+          "v", new vec(60, 0),
+          "aim", player.p,
           "f", (me0) => {
-            nextBullets.push(...remodel([bullet_model], ["type", "neutral", "p", me0.p,
-              "wait", "frame", 12, (me1) => {
-                me1.life = 0; nextBullets.push(...remodel([bullet_model], ["colourful", me.frame, "p", me1.p, "v", new vec(12, 0), "aim", player.p, "f", (me) => { me.colour += 12; }, "wait", "frame", 6, (me2) => { me2.life = 0; }, "ex", 16, me1.p]));
-              }]));
+            nextBullets.push(...remodel([bullet_model], ["type", "neutral", "p", me0.p, "wait", "frame", 16, (me1) => {
+              me1.life = 0;
+              nextBullets.push(...remodel([bullet_model], ["colourful", me.frame, "p", me1.p, "v", new vec(12, 0), "f", (me) => { me.colour += 12; }, "wait", "frame", 6, (me2) => { me2.life = 0; }, "ex", 16, me1.p]));
+            }]));
           }]));
       }
     }
@@ -75,7 +79,7 @@ EnemiesData.enemy_1 = {
 };
 
 EnemiesData.enemy_2 = {
-  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, l: -24, app: ImgData.NicotinE,
+  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, l: -24, app: ImgData.NicotineE,
   Update: (me) => {
 
     if (me.frame < 24) {
@@ -93,7 +97,7 @@ EnemiesData.enemy_2 = {
 
 
     if (me.life <= 0) {
-      nextEnemies.push({ ...EnemiesData["enemy_3"] });
+      nextEnemies.push({ ...EnemiesData["enemy_5"] });
       bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
@@ -103,7 +107,7 @@ EnemiesData.enemy_2 = {
 };
 
 EnemiesData.enemy_3 = {
-  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: ImgData.NicotinE,
+  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: ImgData.NicotineE,
   Update: (me) => {
 
     if (me.frame < 24) {
@@ -127,7 +131,7 @@ EnemiesData.enemy_3 = {
 };
 
 EnemiesData.enemy_4 = {
-  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: ImgData.NicotinE,
+  p: new vec(gamewidth / 2, gameheight / 2), life: 100, maxlife: 100, frame: 0, r: 48, app: ImgData.NicotineE,
   Update: (me) => {
 
     if (me.frame < 24) {
@@ -147,7 +151,7 @@ EnemiesData.enemy_4 = {
     me.frame++;
 
     if (me.life <= 0) {
-      nextEnemies.push({ ...EnemiesData["enemy_5"] });
+      nextEnemies.push({ ...EnemiesData["enemy_1"] });
       bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
@@ -157,7 +161,7 @@ EnemiesData.enemy_4 = {
 };
 
 EnemiesData.enemy_5 = {
-  p: new vec(gamewidth / 2, gameheight / 2), life: 300, maxlife: 300, frame: 0, r: 48, hakkyou: false, app: ImgData.NicotinE,
+  p: new vec(gamewidth / 2, gameheight / 2), life: 300, maxlife: 300, frame: 0, r: 48, hakkyou: false, app: ImgData.NicotineE,
   Update: (me) => {
 
     let interval = me.life > me.maxlife / 2 ? 16 : 8;
@@ -182,7 +186,7 @@ EnemiesData.enemy_5 = {
       bullets = [];
       playSound(SoundData.KO);
 
-      scene0.ending = true;
+      scene0.storyMode = true;
     }
   }
 };
@@ -338,7 +342,7 @@ EnemiesData.fructose_5 = {
       scene0.score += me.maxlife ** 2;
       playSound(SoundData.KO);
 
-      scene0.ending = true;
+      scene0.storyMode = true;
     }
   }
 };
