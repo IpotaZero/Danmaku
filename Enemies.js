@@ -182,7 +182,7 @@ EnemiesData.enemy_5 = {
     me.frame++;
 
     if (me.life <= 0) {
-      scene0.score += me.maxlife ** 2;
+      scene0.score += me.maxlife ** 2 + player.life * 10000;
       Bullets = [];
       playSound(SoundData.KO);
 
@@ -361,7 +361,7 @@ EnemiesData.fructose_5 = {
     if (me.life <= 0) {
       Bullets = [];
       vrs.p = me.p;
-      scene0.score += me.maxlife ** 2;
+      scene0.score += me.maxlife ** 2 + player.life * 10000;
       playSound(SoundData.KO);
 
       scene0.storyMode = true;
