@@ -24,7 +24,7 @@ EnemiesData.enemy_0 = {
     } else {
       me.p = circleMove(new vec(gamewidth / 2, gameheight / 2), me.frame - 24, width / 2, 144);
       if (me.frame % 8 == 0) {
-        bullets.push(...remodel([bullet_model], ["p", me.p, "colourful", me.frame, "v", new vec(1, 0), "ex", 16, me.p]));
+        Bullets.push(...remodel([bullet_model], ["p", me.p, "colourful", me.frame, "v", new vec(1, 0), "ex", 16, me.p]));
       }
     }
 
@@ -32,7 +32,7 @@ EnemiesData.enemy_0 = {
 
     if (me.life <= 0) {
       nextEnemies.push({ ...EnemiesData["enemy_3"] });
-      bullets = [];
+      Bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
       playSound(SoundData.KO);
@@ -48,11 +48,11 @@ EnemiesData.enemy_1 = {
       me.p = vrs.p.add(new vec(gamewidth / 2, gameheight / 2).sub(vrs.p).mlt(me.frame / 24));
     } else {
       if (me.frame % 24 == 0) {
-        bullets.push(...remodel([bullet_model], ["app", "ball", "r", 16, "colourful", me.frame, "p", me.p, "v", new vec(6, 0), "ex", 16, me.p]));
+        Bullets.push(...remodel([bullet_model], ["app", "ball", "r", 16, "colourful", me.frame, "p", me.p, "v", new vec(6, 0), "ex", 16, me.p]));
       }
 
       if (me.frame % 12 == 0) {
-        bullets.push(...remodel([bullet_model], [
+        Bullets.push(...remodel([bullet_model], [
           "type", "neutral",
           "p", me.p,
           "v", new vec(60, 0),
@@ -70,7 +70,7 @@ EnemiesData.enemy_1 = {
 
     if (me.life <= 0) {
       nextEnemies.push({ ...EnemiesData["enemy_2"] });
-      bullets = [];
+      Bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
       playSound(SoundData.KO);
@@ -86,10 +86,10 @@ EnemiesData.enemy_2 = {
       me.p = vrs.p.add(new vec(gamewidth / 2, gameheight / 2).sub(vrs.p).mlt(me.frame / 24));
     } else {
       if (me.frame % 6 == 0) {
-        bullets.push(...remodel([bullet_model], ["colourful", me.frame, "p", me.p, "v", new vec(8, 0), "rot", 2 * Math.PI / 360 * me.frame, "arrow", 60, "ex", 12, me.p]));
+        Bullets.push(...remodel([bullet_model], ["colourful", me.frame, "p", me.p, "v", new vec(8, 0), "rot", 2 * Math.PI / 360 * me.frame, "arrow", 60, "ex", 12, me.p]));
       }
-      bullets.push(...remodel([bullet_model], ["colourful", me.frame + 30, "line", 6, [circleMove(me.p, me.frame, me.p.length * me.l / 144, 360, Math.PI), circleMove(me.p, me.frame, me.p.length * me.l / 144, 360)], "wait", "frame", 0, (me) => { me.life = 0; }]));
-      bullets.push(...remodel([bullet_model], ["colourful", me.frame + 30, "line", 6, [circleMove(me.p, me.frame, me.p.length * me.l / 144, 360, Math.PI / 2), circleMove(me.p, me.frame, me.p.length * me.l / 144, 360, 3 * Math.PI / 2)], "wait", "frame", 0, (me) => { me.life = 0; }]));
+      Bullets.push(...remodel([bullet_model], ["colourful", me.frame + 30, "line", 6, [circleMove(me.p, me.frame, me.p.length * me.l / 144, 360, Math.PI), circleMove(me.p, me.frame, me.p.length * me.l / 144, 360)], "wait", "frame", 0, (me) => { me.life = 0; }]));
+      Bullets.push(...remodel([bullet_model], ["colourful", me.frame + 30, "line", 6, [circleMove(me.p, me.frame, me.p.length * me.l / 144, 360, Math.PI / 2), circleMove(me.p, me.frame, me.p.length * me.l / 144, 360, 3 * Math.PI / 2)], "wait", "frame", 0, (me) => { me.life = 0; }]));
     }
 
     me.frame++;
@@ -98,7 +98,7 @@ EnemiesData.enemy_2 = {
 
     if (me.life <= 0) {
       nextEnemies.push({ ...EnemiesData["enemy_5"] });
-      bullets = [];
+      Bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
       playSound(SoundData.KO);
@@ -114,7 +114,7 @@ EnemiesData.enemy_3 = {
       me.p = vrs.p.add(new vec(gamewidth / 2, gameheight / 2).sub(vrs.p).mlt(me.frame / 24));
     } else {
       if (me.frame % 12 == 0) {
-        bullets.push(...remodel([bullet_model], ["colourful", me.frame, "p", me.p, "life", 2, "v", new vec(6, 0), "bound", "ex", 16, me.p, "wait", "frame", 24, (me) => { me.v = player.p.sub(me.p).nor().mlt(12) }]));
+        Bullets.push(...remodel([bullet_model], ["colourful", me.frame, "p", me.p, "life", 2, "v", new vec(6, 0), "bound", "ex", 16, me.p, "wait", "frame", 24, (me) => { me.v = player.p.sub(me.p).nor().mlt(12) }]));
       }
     }
 
@@ -122,7 +122,7 @@ EnemiesData.enemy_3 = {
 
     if (me.life <= 0) {
       nextEnemies.push({ ...EnemiesData["enemy_4"] });
-      bullets = [];
+      Bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
       playSound(SoundData.KO);
@@ -140,7 +140,7 @@ EnemiesData.enemy_4 = {
       me.p = me.p.add(player.p.sub(me.p).nor().mlt(12));
 
       if (me.frame % 12 == 0) {
-        bullets.push(...remodel([bullet_model], ["colourful", me.frame, "p", me.p, "v", new vec(12, 0), "aim", player.p, "frame", 0, "f", (me) => {
+        Bullets.push(...remodel([bullet_model], ["colourful", me.frame, "p", me.p, "v", new vec(12, 0), "aim", player.p, "frame", 0, "f", (me) => {
           if (me.frame < 24) { me.v = player.p.sub(me.p).nor().mlt(12); }
           me.frame++;
           nextBullets.push(...remodel([bullet_model], ["colour", me.colour, "p", me.p, "v", me.v, "wait", "frame", 1, (me) => { me.life = 0; }, "arrow", me.frame * 4]));
@@ -152,7 +152,7 @@ EnemiesData.enemy_4 = {
 
     if (me.life <= 0) {
       nextEnemies.push({ ...EnemiesData["enemy_1"] });
-      bullets = [];
+      Bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
       playSound(SoundData.KO);
@@ -174,16 +174,16 @@ EnemiesData.enemy_5 = {
     if (me.frame < 24) {
       me.p = vrs.p.add(new vec(gamewidth / 2, gameheight / 2).sub(vrs.p).mlt(me.frame / 24));
     } else {
-      if (me.frame % (interval * 2) == 0) { bullets.push(...remodel([bullet_model], ["app", "laser", "r", 2, "p", me.p, "colourful", me.frame, "v", new vec(6, 0), "aim", player.p, "rot", 2 * Math.PI / 32, "f", (me) => { if (me.v.length < 24) { me.v = me.v.mlt(1.1); } }, "arrow", 60, "ex", 16, me.p])); }
-      if (me.frame % interval == 0) { bullets.push(...remodel([bullet_model], ["r", 6, "p", me.p, "colourful", me.frame, "v", new vec(6, 0), "rot", 2 * Math.PI * me.frame / 144, "ex", 32, me.p])); }
-      if (me.frame % interval == interval / 2) { bullets.push(...remodel([bullet_model], ["r", 6, "p", me.p, "colourful", me.frame, "v", new vec(3, 0), "rot", 2 * Math.PI / 64 + 2 * Math.PI * me.frame / 144, "ex", 16, me.p])); }
+      if (me.frame % (interval * 2) == 0) { Bullets.push(...remodel([bullet_model], ["app", "laser", "r", 2, "p", me.p, "colourful", me.frame, "v", new vec(6, 0), "aim", player.p, "rot", 2 * Math.PI / 32, "f", (me) => { if (me.v.length < 24) { me.v = me.v.mlt(1.1); } }, "arrow", 60, "ex", 16, me.p])); }
+      if (me.frame % interval == 0) { Bullets.push(...remodel([bullet_model], ["r", 6, "p", me.p, "colourful", me.frame, "v", new vec(6, 0), "rot", 2 * Math.PI * me.frame / 144, "ex", 32, me.p])); }
+      if (me.frame % interval == interval / 2) { Bullets.push(...remodel([bullet_model], ["r", 6, "p", me.p, "colourful", me.frame, "v", new vec(3, 0), "rot", 2 * Math.PI / 64 + 2 * Math.PI * me.frame / 144, "ex", 16, me.p])); }
     }
 
     me.frame++;
 
     if (me.life <= 0) {
       scene0.score += me.maxlife ** 2;
-      bullets = [];
+      Bullets = [];
       playSound(SoundData.KO);
 
       scene0.storyMode = true;
@@ -210,7 +210,7 @@ EnemiesData.fructose_0 = {
       if (me.frame % 16 == 0) {
         let r = me.frame % 32 == 0 ? 1 : 0;
 
-        bullets.push(...remodel([bullet_model], [
+        Bullets.push(...remodel([bullet_model], [
           "p", me.p,
           "colourful", me.frame,
           "v", new vec(12, 0),
@@ -239,7 +239,7 @@ EnemiesData.fructose_0 = {
 
     if (me.life <= 0) {
       nextEnemies.push({ ...EnemiesData["fructose_1"] });
-      bullets = [];
+      Bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
       playSound(SoundData.KO);
@@ -255,7 +255,7 @@ EnemiesData.fructose_1 = {
       me.p = vrs.p.add(new vec(gamewidth / 2, gameheight / 2).sub(vrs.p).mlt(me.frame / 24));
     } else {
       if (me.frame % 12 == 0) {
-        bullets.push(...remodel([bullet_model], ["type", "neutral", "p", me.p,
+        Bullets.push(...remodel([bullet_model], ["type", "neutral", "p", me.p,
           "wait", "frame", 12, (me0) => {
             me0.life = 0;
             nextBullets.push(...remodel([bullet_model], ["colourful", me.frame, "p", me0.p, "v", new vec(6, 0), "ex", 32, me0.p]));
@@ -265,7 +265,7 @@ EnemiesData.fructose_1 = {
             b.push(...remodel([bullet_model], ["type", "neutral", "p", me0.p.add(me0.v), "v", new vec(1, 0), "cross", 60 - me0.frame * 4, "wait", "frame", 0, (me1) => { me1.life = 0; }]));
             b.push(...remodel([bullet_model], ["type", "neutral", "p", me0.p.add(me0.v), "v", new vec(1, 0), "circle", 240 - me0.frame * 16, "wait", "frame", 0, (me1) => { me1.life = 0; }]));
             b.push(...remodel([bullet_model], ["type", "neutral", "p", me0.p.add(me0.v).add(new vec(120 - me0.frame * 8, 0)), "v", new vec(1, 0), "laser", 30 - me0.frame, "ex", 4, me0.p.add(me0.v), "wait", "frame", 0, (me1) => { me1.life = 0; }]));
-            bullets.push(...remodel(b, ["rev", 2 * Math.PI * me.frame / 144, me0.p]));
+            Bullets.push(...remodel(b, ["rev", 2 * Math.PI * me.frame / 144, me0.p]));
           }]));
       }
     }
@@ -274,7 +274,7 @@ EnemiesData.fructose_1 = {
 
     if (me.life <= 0) {
       nextEnemies.push({ ...EnemiesData["fructose_2"] });
-      bullets = [];
+      Bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
       playSound(SoundData.KO);
@@ -299,7 +299,7 @@ EnemiesData.fructose_2 = {
 
       if ((me.frame - 24) % 24 == 0) {
         for (let i = 1; i < 5; i++) {
-          bullets.push(...remodel([bullet_model], [
+          Bullets.push(...remodel([bullet_model], [
             "colourful", me.frame,
             "p", me.p,
             "v", new vec(24 / i, 0),
@@ -329,7 +329,7 @@ EnemiesData.fructose_2 = {
 
     if (me.life <= 0) {
       nextEnemies.push({ ...EnemiesData["fructose_5"] });
-      bullets = [];
+      Bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
       playSound(SoundData.KO);
@@ -346,7 +346,7 @@ EnemiesData.fructose_5 = {
       me.p = vrs.p.add(new vec(gamewidth / 2, gameheight / 2).sub(vrs.p).mlt(me.frame / 24));
     } else {
       for (let i = 0; i < 4; i++) {
-        bullets.push(...remodel([bullet_model], [
+        Bullets.push(...remodel([bullet_model], [
           "type", "neutral",
           "p", new vec(Math.random() * gamewidth, Math.random() * gameheight),
           "f", (me0) => { nextBullets.push(...remodel([bullet_model], ["r", 2, "type", "neutral", "p", me0.p, "cross", (me0.frame / 2) ** 2, "delete", 1])); },
@@ -359,7 +359,7 @@ EnemiesData.fructose_5 = {
     me.life--;
 
     if (me.life <= 0) {
-      bullets = [];
+      Bullets = [];
       vrs.p = me.p;
       scene0.score += me.maxlife ** 2;
       playSound(SoundData.KO);

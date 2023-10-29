@@ -28,8 +28,8 @@ const Scene = class {
     }
 }
 
-let bullets = [];
-let enemies = [];
+let Bullets = [];
+let Enemies = [];
 let nextBullets = [];
 let nextEnemies = [];
 let player = {};
@@ -103,8 +103,8 @@ const Scene0 = class extends Scene {
 
         this.star = [];
 
-        bullets = [];
-        enemies = [{ ...EnemiesData.enemy_first }];
+        Bullets = [];
+        Enemies = [{ ...EnemiesData.enemy_first }];
         nextBullets = [];
         nextEnemies = [];
 
@@ -154,7 +154,7 @@ const Scene0 = class extends Scene {
         }
 
         if (pushed.includes("Delete")) {
-            enemies[0].life = 0;
+            Enemies[0].life = 0;
         }
 
         this.draw();
@@ -188,7 +188,7 @@ const Scene0 = class extends Scene {
                     image = s[2];
                     break;
                 case "enemy":
-                    enemies = [{ ...s[1] }];
+                    Enemies = [{ ...s[1] }];
                     this.storyMode = false;
                     this.storyNum++;
                     break;
@@ -228,11 +228,11 @@ const Scene0 = class extends Scene {
     }
 
     danmaku() {
-        bullets.push(...nextBullets);
+        Bullets.push(...nextBullets);
         nextBullets = [];
 
         //弾
-        bullets.forEach((b) => {
+        Bullets.forEach((b) => {
             b.f.forEach((fun) => { fun(b); });
 
             //playerとbulletの関係
@@ -245,15 +245,15 @@ const Scene0 = class extends Scene {
                     b.life = 0;
                     player.p = new vec(20, gameheight / 2);
                     player.inv = 24;
-                    bullets = [];
+                    Bullets = [];
                 }
             }
         });
 
         //enemyとbulletの関係
         this.enemy_life_bar_frame_colour = "white";
-        enemies.forEach((e) => {
-            bullets.forEach((b) => {
+        Enemies.forEach((e) => {
+            Bullets.forEach((b) => {
                 if (b.type == "friend" && !e.muteki && is_touched(e, b)) {
                     e.life -= player.damage;
                     b.life = 0;
@@ -266,11 +266,11 @@ const Scene0 = class extends Scene {
             e.Update(e);
         });
 
-        enemies.push(...nextEnemies);
+        Enemies.push(...nextEnemies);
         nextEnemies = [];
 
-        enemies = enemies.filter((e) => { return e.life > 0; });
-        bullets = bullets.filter((b) => { return b.life > 0; });
+        Enemies = Enemies.filter((e) => { return e.life > 0; });
+        Bullets = Bullets.filter((b) => { return b.life > 0; });
 
         if (player.life <= 0) { scenemanager.MoveTo(scene1); }
     }
@@ -305,13 +305,13 @@ const Scene0 = class extends Scene {
         if (pushed.includes("KeyX")) { player.angle = (player.angle + 1) % 8; }
 
         //弾の発射
-        if (this.frame % 3 == 0) { bullets.push(...remodel([b0], ["p", player.p, "v", new vec(30, 0).rot(Math.PI / 4 * player.angle), "nway", 3, Math.PI / 12, player.p])); }
+        if (this.frame % 3 == 0) { Bullets.push(...remodel([b0], ["p", player.p, "v", new vec(30, 0).rot(Math.PI / 4 * player.angle), "nway", 3, Math.PI / 12, player.p])); }
 
         //敵の方向を示す(0番目だけ)
-        if (enemies.length > 0) {
-            bullets.push(...remodel([b0], ["type", "neutral", "p", player.p.add(enemies[0].p.sub(player.p).nor().mlt(-30)), "v", enemies[0].p.sub(player.p).nor(), "arrow", 60, "v", new vec(0, 0), "wait", "frame", 1, (me) => { me.life = 0; }]));
+        if (Enemies.length > 0) {
+            Bullets.push(...remodel([b0], ["type", "neutral", "p", player.p.add(Enemies[0].p.sub(player.p).nor().mlt(-30)), "v", Enemies[0].p.sub(player.p).nor(), "arrow", 60, "v", new vec(0, 0), "wait", "frame", 1, (me) => { me.life = 0; }]));
             if (config.angle_mode == "jidou") {
-                player.angle = Math.floor(getAngle(new vec(1, 0), enemies[0].p.sub(player.p)) / Math.PI * 4 + 0.5);
+                player.angle = Math.floor(getAngle(new vec(1, 0), Enemies[0].p.sub(player.p)) / Math.PI * 4 + 0.5);
             }
         }
 
@@ -339,7 +339,7 @@ const Scene0 = class extends Scene {
         let bulletsOnScreen = 0;
 
         //弾
-        bullets.forEach((b) => {
+        Bullets.forEach((b) => {
             //画面内にあるなら
             if ((Icamera.p.x <= b.p.x && b.p.x <= Icamera.p.x + width && Icamera.p.y <= b.p.y && b.p.y <= Icamera.p.y + Iheight) || this.bullet_mode2 == "zenbu") {
                 bulletsOnScreen++;
@@ -374,7 +374,7 @@ const Scene0 = class extends Scene {
 
         //敵
         let life_bar_colour = "rgba(255,255,255,0.8)";
-        enemies.forEach((e) => {
+        Enemies.forEach((e) => {
             if (e.muteki) {
                 life_bar_colour = "rgba(255,0,0,0.8)";
             }
@@ -428,8 +428,8 @@ const Scene0 = class extends Scene {
         Itext(null, 200 + fontsize * 10 / 2, Iheight + 200 - fontsize, "★".repeat(player.life));
 
         //大きな体力バー
-        if (enemies.length > 0) {
-            Irect(200, Iheight + 200, (width - 200 - 20) * (enemies[0].life / enemies[0].maxlife), 20, life_bar_colour);
+        if (Enemies.length > 0) {
+            Irect(200, Iheight + 200, (width - 200 - 20) * (Enemies[0].life / Enemies[0].maxlife), 20, life_bar_colour);
             Irect(200, Iheight + 200, (width - 200 - 20), 20, this.enemy_life_bar_frame_colour, "stroke", 4);
         }
 
