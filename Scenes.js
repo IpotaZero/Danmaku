@@ -309,7 +309,14 @@ const Scene0 = class extends Scene {
 
         //敵の方向を示す(0番目だけ)
         if (Enemies.length > 0) {
-            Bullets.push(...remodel([b0], ["type", "neutral", "p", player.p.add(Enemies[0].p.sub(player.p).nor().mlt(-30)), "v", Enemies[0].p.sub(player.p).nor(), "arrow", 60, "v", new vec(0, 0), "wait", "frame", 1, (me) => { me.life = 0; }]));
+            Bullets.push(...remodel([b0], ["type", "neutral",
+                "p", player.p.add(Enemies[0].p.sub(player.p).nor().mlt(-30)),
+                "v", Enemies[0].p.sub(player.p),
+                "arrow", 60,
+                "v", new vec(0, 0),
+                "delete", 1
+            ]));
+
             if (config.angle_mode == "jidou") {
                 player.angle = Math.floor(getAngle(new vec(1, 0), Enemies[0].p.sub(player.p)) / Math.PI * 4 + 0.5);
             }
