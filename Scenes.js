@@ -54,7 +54,7 @@ SoundData.cancel = new Audio("Sounds/cancel.wav");
 
 SoundData.Guilt = new Audio("sounds/Guilt.wav");
 SoundData.Conflict = new Audio("sounds/Conflict.wav");
-SoundData.bgm_op = new Audio("sounds/bgm_op.wav");
+SoundData.bgm_op = new Audio("sounds/The Delightful Days.wav");
 
 let stories = [
 	[
