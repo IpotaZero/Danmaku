@@ -60,7 +60,7 @@ let stories = [
 	[
 		["bgm", SoundData.Guilt],
 		["text", "Nicotine:\nBonjour! 非行少年! お巡りさんだぞ!", ImgData.Nicotine],
-		["text", "Nicotine:\nこんな夜中に街をうろつきおって...", ImgData.Nicotine],
+		["text", "Nicotine:\nこんな夜中に街をうろついて...", ImgData.Nicotine],
 		["text", "Nicotine:\n今から貴様に罰を与えてやろう!", ImgData.Nicotine],
 		["enemy", EnemiesData.enemy_0],
 		["text", "Nicotine:\nやーらーれーたー", ImgData.Nicotine],
@@ -76,7 +76,7 @@ let stories = [
 		["text", "Fructose:\nそれはナゼなら、\nおいしいものは罪でできているから!", ImgData.Fructose],
 		["enemy", EnemiesData.fructose_0],
 		["text", "Fructose:\nまあ、こんなもんだよね、人間って", ImgData.Fructose],
-		["text", "Fructose:\nいくら魔法が使えたって、\n上位存在には手も足も出ないんだ", ImgData.Fructose],
+		["text", "Fructose:\nいくら魔法が使えたって、\n上位存在には手も足も出ないのさ", ImgData.Fructose],
 		["score"],
 		["end"]
 	]
@@ -419,10 +419,10 @@ const Scene0 = class extends Scene {
 				"y:" + player.p.y,
 				"camera.x:" + Math.floor(Icamera.p.x),
 				"camera.y:" + Math.floor(Icamera.p.y),
-				
-				"bullets:" + bullets.length,
-				"bullets_on_Screen:" + bulletsOnScreen,
 				*/
+
+				// "bullets:" + Bullets.length,
+				// "bullets_on_Screen:" + bulletsOnScreen,
 				"graze:" + this.graze,
 				"score:" + this.score,
 				"invisible:" + player.inv
