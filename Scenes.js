@@ -54,7 +54,7 @@ SoundData.cancel = new Audio("Sounds/cancel.wav");
 
 SoundData.Guilt = new Audio("sounds/Guilt.wav");
 SoundData.Conflict = new Audio("sounds/Conflict.wav");
-SoundData.bgm_op = new Audio("sounds/The Delightful Days.wav");
+SoundData.bgm_op = new Audio("sounds/bgm_op.wav");
 
 let stories = [
 	[
@@ -108,7 +108,7 @@ const Scene0 = class extends Scene {
 		nextBullets = [];
 		nextEnemies = [];
 
-		player = { p: new vec(20, gameheight / 2), v: new vec(0, 0), r: 3, speed: 16, angle: 0, life: 12, inv: 0, damage: 1 };
+		player = { p: new vec(20, gameheight / 2), v: new vec(0, 0), r: 3, speed: 16, angle: 0, life: 8, inv: 0, damage: 1 };
 
 		this.storyMode = true;
 		this.storyNum = 0;
@@ -272,7 +272,7 @@ const Scene0 = class extends Scene {
 		Enemies = Enemies.filter((e) => { return e.life > 0; });
 		Bullets = Bullets.filter((b) => { return b.life > 0; });
 
-		if (player.life <= 0) { scenemanager.MoveTo(scene1); }
+		if (player.life < 0) { scenemanager.MoveTo(scene1); }
 	}
 
 	playerMove() {
@@ -432,7 +432,7 @@ const Scene0 = class extends Scene {
 		Itext(null, 200, Iheight + 200 - fontsize, "player_life:");
 
 		Ifont(24, "lightgreen", "serif");
-		Itext(null, 200 + fontsize * 10 / 2, Iheight + 200 - fontsize, "★".repeat(player.life));
+		Itext(null, 200 + fontsize * 10 / 2, Iheight + 200 - fontsize, "★".repeat(Math.max(player.life, 0)));
 
 		//大きな体力バー
 		if (Enemies.length > 0) {
