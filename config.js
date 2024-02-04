@@ -4,5 +4,5 @@ config = {
   bullet_mode: "kirei"
 }
 
-SoundData.muteBGM = true;
-SoundData.muteSE = true;
+SoundData.muteBGM = false;
+SoundData.muteSE = false;
